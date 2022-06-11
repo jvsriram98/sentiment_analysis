@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 from nltk.probability import FreqDist
-
+from wordcloud import WordCloud
 import torch
 from simpletransformers.classification import ClassificationModel
 from sklearn.model_selection import StratifiedShuffleSplit
@@ -43,6 +43,33 @@ x_train, y_train, x_valid, y_valid, x_test, y_test = train_valid_test_split(data
 x_train = x_train['text']
 x_valid = x_valid['text']
 x_test = x_test['text']
+
+
+#EDA is done we can see neutral words and negative words
+plt.figure(figsize=(20,20))
+pos_freq = FreqDist(' '.join(data[data['sentiment'] == 1].text).split(' '))
+wc = WordCloud().generate_from_frequencies(frequencies=pos_freq)
+plt.imshow(wc,interpolation='bilinear')
+plt.title('Neutral Common Text')
+plt.axis('off')
+plt.show()
+plt.figure(figsize=(20,6))
+pos_freq.plot(50,cumulative=False,title='Neutral Common Text')
+plt.show()
+
+plt.figure(figsize=(20,20))
+neg_freq = FreqDist(' '.join(data[data['sentiment'] == 0].text).split(' '))
+wc = WordCloud().generate_from_frequencies(frequencies=neg_freq)
+plt.imshow(wc,interpolation='bilinear')
+plt.title('Negative Common Text')
+plt.axis('off')
+plt.show()
+
+plt.figure(figsize=(20,6))
+neg_freq.plot(50,cumulative=False,title='Negative Common Text',color='red')
+plt.show()
+
+
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 #Tokenize the sentences
